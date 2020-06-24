@@ -3,7 +3,7 @@
 	"http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 	<typeAliases>
-       <package name="com.ssafy.happyhouse.dto"/>
+       <package name="com.influencer.demo.dto"/>
     </typeAliases>
 	<mappers>	  
 		<mapper resource="mappers/user-mapper.xml" />
