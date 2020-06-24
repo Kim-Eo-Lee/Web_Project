@@ -6,10 +6,7 @@
        <package name="com.ssafy.happyhouse.dto"/>
     </typeAliases>
 	<mappers>	  
-	<mapper resource="mappers/user-mapper.xml" />
-		<mapper resource="mappers/dibs.xml" />
-		<mapper resource="mappers/bselect.xml" />
-		<mapper resource="mappers/fselect.xml" />
+		<mapper resource="mappers/user-mapper.xml" />
 	</mappers>
 	
 </configuration>
