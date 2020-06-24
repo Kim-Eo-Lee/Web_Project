@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HRM프로젝트</title>
+  <style type="text/css">
+     td,th{padding: 5px}
+     .skyblue{background-color: skyblue;
+              width: 80px;
+              text-align: left}
+  </style>  
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   
+   <script>
+   /*
+  
+          <RESTful방식>ㅣ
+                                                         HTTP요청방식
+                                                      ($.ajax()의 type속성을 통해)
+                                                         
+                조회요청 :   http://localhost:8080/api/employee/all        +  GET
+                입력요청 :   http://localhost:8080/api/employee            +  POST
+                조회요청 :   http://localhost:8080/api/employee            +  GET
+                수정요청 :   http://localhost:8080/api/employee            +  PUT
+                삭제요청 :   http://localhost:8080/api/employee/{id}       +  DELETE
+    */
+    
+   
+  	
+   function listPrint(){
+         console.log('>>>>listPrint')
+	     $.ajax({
+				type:'GET',
+				url:'/ssafy/api/employee/all',
+				dataType:'json',
+				success:function(data){  //data= [ {key1:val},{key2:val},{key3:val}];
+					var htmlTxt='<table ><tr class=skyblue><th>사번</th><th>이름</th><th>메일아이디</th><th>직책</th></tr>';
+					$.each(data,function(index,value){ //value = {key1:val}
+						htmlTxt += '<tr><td>'+value.id+'</td><td><a href="javascript:showUpForm('+value.id+')">'+value.name+'</a></td><td>'
+								+value.mailid+'</td><td>'+value.title+'</td></tr>';
+					});
+					htmlTxt+='</table>'
+					$('#list').html(htmlTxt);
+					$('#list').show();
+				}
+	     });
+    }//목록보기
+   
+	function showUpForm(no){
+		    $('#list').hide();
+			$('#form').hide();
+			$('#upform').show(500);
+			$.ajax({
+				type:'GET',
+				url:'/ssafy/api/employee/'+no,
+				
+				
+				dataType:'json',
+				success:function(data){
+					$('#upform input[name=id]').val(data.id);
+					$('#upform input[name=name]').val(data.name);
+					$('#upform input[name=mailid]').val(data.mailid);
+					$('#upform input[name=title]').val(data.title);
+				}
+	        });
+	  }//수정폼 보이기
+   
+    $(document).ready(function(){
+    	$('#showList').click(function(){
+    		listPrint();
+    	});//목록보기
+    	
+        $('#showForm').click(function(){
+            $('#list').hide();
+    		$('#upform').hide();
+    		$('#form').show(500);
+    	});//입력폼보기
+    	
+    	
+        $('#bt_insert').click(function(){        	
+	    	$.ajax({//<!--  id, name, mailid, manager_id -->
+				type:'POST',
+				url:'/ssafy/api/employee',
+				data: { //JSON.stringify({
+					  id:         $("#form input[name=id]").val(),
+					  name:       $("#form input[name=name]").val(),
+					  mailid:     $("#form input[name=mailid]").val(),				  
+					  title:      $("#form input[name=title]").val()				  
+				     },
+				//);
+				success:function(data){    				
+					$('#form').hide();
+					listPrint();
+				}
+			});
+        });//입력요청
+        
+
+        $('#bt_update').click(function(){   
+        	
+        	$.ajax({
+    			type:'PUT',
+    			url:'/ssafy/api/employee',
+    			headers:{"Content-Type":"application/json"},
+    			data:  JSON.stringify(
+    				 {
+    				  id:         $("#upform input[name=id]").val(),
+    				  name:       $("#upform input[name=name]").val(),
+    				  mailid:     $("#upform input[name=mailid]").val(),
+    				  title:      $("#upform input[name=title]").val()
+    			     })
+    			     ,
+    			success:function(data){    	
+    				$('#upform').hide();
+    				listPrint();
+    			}
+    		  });
+        });//수정요청
+        
+
+    	
+        $('#bt_del').click(function(){  
+        	$.ajax({
+    			type:'DELETE',
+    			url:'/ssafy/api/employee/'+$("#upform input[name=id]").val(),    			
+    			success:function(data){
+    				$('#upform').hide();
+    				listPrint();
+    			}
+    		  });	
+        });//삭제요청
+        
+        /*
+          <RESTful방식>ㅣ
+                                                         HTTP요청방식
+                                                      ($.ajax()의 type속성을 통해)
+                                                         
+                조회요청 :   http://localhost:8080/api/employee/all        +  GET
+                입력요청 :   http://localhost:8080/api/employee            +  POST
+                조회요청 :   http://localhost:8080/api/employee            +  GET
+                수정요청 :   http://localhost:8080/api/employee            +  PUT
+                삭제요청 :   http://localhost:8080/api/employee/{id}       +  DELETE
+        
+                
+           참고) 
+           JSON.stringify( 객체 );     JSON.stringify( { key1:value, key2:value } ); ==>  "{ key1:value, key2:value }"
+           JSON.parse( 문자열  );      JSON.parse( "{ key1:value, key2:value }");  ==>  { key1:value, key2:value }
+        */
+        
+    	
+     });//ready
+     </script>
+</head>
+<body>
+
+  <h3>REST테스트</h3>
+  <button id="showList">사원목록보기</button> 
+  <button id="showForm">사원입력</button>
+  
+  <hr>
+  <div id="list"></div>  
+  <div id="form" style="display: none">
+  <h3>입력폼</h3>
+  <hr>    <!--  id, name, mailid, manager_id -->
+    <table border="1">
+      <tr>
+         <td class="skyblue">사원번호</td>
+         <td><input type="text" name="id"></td>
+      </tr>
+      <tr>
+         <td class="skyblue">이름</td>
+         <td><input type="text" name="name"></td>
+      </tr>
+      <tr>
+         <td class="skyblue">메일아이디</td>
+         <td><input type="text" name="mailid"></td>
+      </tr>
+      <tr>
+         <td class="skyblue">직책</td>
+         <td><input type="text" name="title"></td>
+      </tr>
+      <tr>
+         <td colspan="2">
+           <input type="button" value="입력" id="bt_insert">
+           <input type="reset" value="취소">
+         </td>
+      </tr>
+    </table> 
+  </div>
+  <!--  id, name, mailid, manager_id -->
+  <div id="upform" style="display:none">
+     <input type="hidden" name="no">
+  <h3>수정폼</h3>
+  <hr>
+    <table border="1">
+      <tr>
+         <td class="skyblue">사원번호</td>
+         <td><input type="text" name="id" ></td>
+      </tr>
+      <tr>
+         <td class="skyblue">이름</td>
+         <td><input type="text" name="name" ></td>
+      </tr>
+      <tr>
+         <td class="skyblue">메일아이디</td>
+         <td><input type="text" name="mailid" ></td>
+      </tr>
+      <tr>
+         <td class="skyblue">직책</td>
+         <td><input type="text" name="title" ></td>
+      </tr>
+      <tr>
+         <td colspan="2">
+           <input type="button" value="수정" id="bt_update">
+           <input type="reset" value="취소" >
+           <input type="button" value="삭제" id="bt_del">
+         </td>
+      </tr>
+    </table>
+  </div>
+  <div id="result"></div>
+
+</body>
+</html>
+

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+                        
+<mapper namespace="Board">
+	<select id="getList" parameterType="com.ssafy.happyhouse.dto.BoardDTO" resultType="com.ssafy.happyhouse.dto.BoardDTO">
+		SELECT articleno, userid, subject, content, regtime
+		FROM ssafydb.Board
+	</select>
+	<insert id="boardWrite" parameterType="com.ssafy.happyhouse.dto.BoardDTO">
+		insert into ssafydb.Board (userid, subject, content)
+		values (#{userid}, #{subject}, #{content})
+	</insert>
+	<select id="getDetail" parameterType="java.lang.String" resultType="com.ssafy.happyhouse.dto.BoardDTO">
+		SELECT articleno, userid, subject, content, regtime
+		FROM ssafydb.Board
+		WHERE articleno = #{articleno}
+	</select>
+	
+	<delete id="delBoard" parameterType="java.lang.String">
+		DELETE FROM ssafydb.Board
+		WHERE articleno = #{articleno}
+	</delete>
+	
+	<update id="modifyBoard" parameterType="com.ssafy.happyhouse.dto.BoardDTO">
+		update ssafydb.Board
+		set subject = #{subject}, content = #{content}
+		where articleno = #{articleno}
+	</update>
+</mapper>
