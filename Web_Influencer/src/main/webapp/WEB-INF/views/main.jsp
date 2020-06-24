@@ -7,10 +7,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src="js/main.js"></script>
+<link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 	<h3>Hello</h3>
-	<h5>branch</h5>
-	<h2>ready</h2>
 </body>
 </html>
